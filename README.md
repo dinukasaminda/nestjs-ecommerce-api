@@ -31,3 +31,7 @@ Link : https://github.com/dinukasaminda/nestjs-ecommerce-api/blob/master/swagger
 go to :
 https://editor-next.swagger.io/
 copy and paste swagger.json content
+
+## Swagger hub link
+
+swagger hub link : https://app.swaggerhub.com/apis/dinukasaminda1/EcommerceAPI/1.0.0
