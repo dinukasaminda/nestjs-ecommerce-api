@@ -1,5 +1,11 @@
 # Ecommerce application
 
+## Install dependencies
+
+```bash
+yarn install
+```
+
 ## Run database server on docker
 
 ```bash
