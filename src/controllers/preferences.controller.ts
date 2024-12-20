@@ -5,12 +5,16 @@ import {
   Post,
   Body,
   Delete,
+  Param,
 } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
 } from '@nestjs/swagger';
 import { AddPreferenceDto } from 'src/dto/add-preferences.dto';
 import { PreferenceDto } from 'src/dto/preferences.dto';
@@ -42,8 +46,19 @@ export class PreferencesController {
     return this.preferencesService.addPreference(userId, addPreferenceDto);
   }
 
-  @Delete('remove')
-  removePreference(@Request() req, @Body('id') id: number) {
+  @Delete('remove/:id')
+  @ApiOperation({
+    summary: 'Remove preference',
+    description: 'Remove a preference from the user',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the preference to delete',
+    example: 1,
+  }) // Document the ID parameter
+  @ApiNoContentResponse({ description: 'Preference deleted successfully' }) // Success response
+  @ApiNotFoundResponse({ description: 'Preference not found' }) // E
+  removePreference(@Request() req, @Param('id') id: number) {
     const userId = req.user.id;
     return this.preferencesService.removePreference(userId, id);
   }
