@@ -14,4 +14,4 @@ yarn start:dev
 
 ## Swagger UI
 
-http://localhost:8080/swagger-ui
+http://localhost:3000/swagger-ui

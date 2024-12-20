@@ -28,7 +28,7 @@ import { Preference } from './entities/preference.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      entities: [User, Preference],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Preference]),

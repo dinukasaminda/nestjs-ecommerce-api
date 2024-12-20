@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { IsEmail, IsNotEmpty, IsDate } from 'class-validator';
 import { Preference } from './preference.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -23,6 +24,7 @@ export class User {
   isVerified: boolean;
 
   @Column()
+  @Exclude()
   password: string;
 
   @OneToMany(() => Preference, (preference) => preference.user)

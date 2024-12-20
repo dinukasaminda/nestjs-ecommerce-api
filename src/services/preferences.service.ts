@@ -4,7 +4,9 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { AddPreferenceDto } from 'src/dto/add-preferences.dto';
+import { PreferenceDto } from 'src/dto/preferences.dto';
 import { Preference } from 'src/entities/preference.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -24,7 +26,13 @@ export class PreferencesService {
   async addPreference(
     userId: number,
     addPreferenceDto: AddPreferenceDto,
-  ): Promise<Preference> {
+  ): Promise<PreferenceDto> {
+    // Ensure the user exists
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     // Check if the preference already exists for the user
     const existingPreference = await this.preferencesRepository.findOne({
       where: {
@@ -40,9 +48,10 @@ export class PreferencesService {
     // Create and save the new preference
     const preference = this.preferencesRepository.create({
       name: addPreferenceDto.preference,
-      user: { id: userId },
+      user,
     });
-    return this.preferencesRepository.save(preference);
+    const res = await this.preferencesRepository.save(preference);
+    return plainToInstance(PreferenceDto, res);
   }
 
   /**
@@ -68,10 +77,10 @@ export class PreferencesService {
   /**
    * Get all preferences for a user
    */
-  async getUserPreferences(userId: number): Promise<Preference[]> {
-    return this.preferencesRepository.find({
+  async getUserPreferences(userId: number): Promise<PreferenceDto[]> {
+    const res = await this.preferencesRepository.find({
       where: { user: { id: userId } },
-      relations: ['user'],
     });
+    return res.map((v) => plainToInstance(PreferenceDto, v));
   }
 }
