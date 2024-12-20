@@ -78,7 +78,6 @@ export class PreferencesService {
    * Get all preferences for a user
    */
   async getUserPreferences(userId: number): Promise<PreferenceDto[]> {
-    console.log('user id:', userId);
     const res = await this.preferencesRepository.find({
       where: { user: { id: userId } },
     });

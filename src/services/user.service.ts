@@ -36,7 +36,7 @@ export class UserService {
   async activateAccount(email: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOneBy({ email });
     if (!user) {
-      throw new Error('User not found');
+      throw new BadRequestException('User not found');
     }
     user.isVerified = true;
     await this.userRepository.save(user);

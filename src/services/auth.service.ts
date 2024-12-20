@@ -38,7 +38,7 @@ export class AuthService {
     const user = await this.validateUser(email, password);
 
     if (!user.isVerified) {
-      throw new UnauthorizedException('Account is not verified');
+      throw new UnauthorizedException('Account is not activated');
     }
 
     const payload = { email: user.email, sub: user.id };

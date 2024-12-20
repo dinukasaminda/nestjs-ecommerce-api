@@ -6,6 +6,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiResponseProperty,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { MessageDto } from 'src/dto/message.dto';
@@ -34,25 +35,10 @@ export class UserController {
     type: UserDto,
   })
   @ApiBadRequestResponse({
-    description: 'User already exists',
+    description: 'User already exists or invalid data',
   })
   register(@Body() createUserDto: CreateUserDto) {
     return this.userService.register(createUserDto);
-  }
-
-  @Post('login')
-  @ApiOperation({
-    summary: 'User Login',
-    description: 'Login with the provided email and password',
-  })
-  @ApiOkResponse({
-    description: 'User logged in successfully',
-    type: UserLoginResDto,
-  })
-  login(@Body() loginDto: UserLoginDto): Promise<{
-    accessToken: string;
-  }> {
-    return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @Post('activate')
@@ -66,7 +52,29 @@ export class UserController {
     description: 'User account activated successfully',
     type: MessageDto,
   })
+  @ApiBadRequestResponse({
+    description: 'User not found',
+  })
   activateAccount(@Body() userverifyDto: UserVerifyDto) {
     return this.userService.activateAccount(userverifyDto.email);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'User Login',
+    description: 'Login with the provided email and password',
+  })
+  @ApiOkResponse({
+    description: 'User logged in successfully',
+    type: UserLoginResDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid credentials or account not activated',
+  })
+  login(@Body() loginDto: UserLoginDto): Promise<{
+    accessToken: string;
+  }> {
+    return this.authService.login(loginDto.email, loginDto.password);
   }
 }

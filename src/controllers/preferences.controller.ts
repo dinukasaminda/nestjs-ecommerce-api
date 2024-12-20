@@ -74,7 +74,7 @@ export class PreferencesController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Get preferences',
-    description: 'Get all preferences for the user',
+    description: 'Get all preferences for the user logged in',
   })
   @ApiOkResponse({
     description: 'Preferences retrieved successfully',
