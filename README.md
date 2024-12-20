@@ -24,14 +24,10 @@ http://localhost:3000/swagger-ui
 
 ## Swagger JSON
 
-./swagger.json
+Link : https://github.com/dinukasaminda/nestjs-ecommerce-api/blob/master/swagger.json
 
 ## Open Swagger Editor
 
-```bash
 go to :
 https://editor-next.swagger.io/
 copy and paste swagger.json content
-
-
-```
