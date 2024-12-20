@@ -25,3 +25,13 @@ http://localhost:3000/swagger-ui
 ## Swagger JSON
 
 ./swagger.json
+
+## Open Swagger Editor
+
+```bash
+go to :
+https://editor-next.swagger.io/
+copy and paste swagger.json content
+
+
+```
