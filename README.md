@@ -1,9 +1,9 @@
 # Ecommerce application
 
-## Run application on docker
+## Run database server on docker
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 ## Run application on local

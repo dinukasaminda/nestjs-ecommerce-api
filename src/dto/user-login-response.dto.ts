@@ -5,7 +5,7 @@ export class UserLoginResDto {
     description: 'User authnetication token',
     type: 'string',
     required: true,
-    example: 'ey...',
+    example: 'string',
   })
   accessToken: string;
 }

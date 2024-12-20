@@ -24,7 +24,6 @@ export class User {
   isVerified: boolean;
 
   @Column()
-  @Exclude()
   password: string;
 
   @OneToMany(() => Preference, (preference) => preference.user)

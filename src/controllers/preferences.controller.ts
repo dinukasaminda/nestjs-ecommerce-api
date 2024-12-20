@@ -6,6 +6,8 @@ import {
   Body,
   Delete,
   Param,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiConflictResponse,
@@ -20,6 +22,7 @@ import { AddPreferenceDto } from 'src/dto/add-preferences.dto';
 import { PreferenceDto } from 'src/dto/preferences.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { PreferencesService } from 'src/services/preferences.service';
+import { JwtPayload } from 'src/types/jwt-payload.interface';
 
 @Controller('preferences')
 @UseGuards(AuthGuard)
@@ -39,7 +42,7 @@ export class PreferencesController {
     description: 'Preference already exists',
   })
   addPreference(
-    @Request() req,
+    @Request() req: { user: JwtPayload },
     @Body() addPreferenceDto: AddPreferenceDto,
   ): Promise<PreferenceDto> {
     const userId = req.user.id;
@@ -47,6 +50,7 @@ export class PreferencesController {
   }
 
   @Delete('remove/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remove preference',
     description: 'Remove a preference from the user',
@@ -58,12 +62,16 @@ export class PreferencesController {
   }) // Document the ID parameter
   @ApiNoContentResponse({ description: 'Preference deleted successfully' }) // Success response
   @ApiNotFoundResponse({ description: 'Preference not found' }) // E
-  removePreference(@Request() req, @Param('id') id: number) {
+  removePreference(
+    @Request() req: { user: JwtPayload },
+    @Param('id') id: number,
+  ) {
     const userId = req.user.id;
     return this.preferencesService.removePreference(userId, id);
   }
 
   @Post('get')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Get preferences',
     description: 'Get all preferences for the user',
@@ -72,7 +80,7 @@ export class PreferencesController {
     description: 'Preferences retrieved successfully',
     type: [PreferenceDto],
   })
-  getPreferences(@Request() req) {
+  getPreferences(@Request() req: { user: JwtPayload }) {
     const userId = req.user.id;
     return this.preferencesService.getUserPreferences(userId);
   }

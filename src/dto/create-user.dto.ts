@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsDate } from 'class-validator';
 
 export class CreateUserDto {
@@ -27,6 +28,7 @@ export class CreateUserDto {
     example: '1995-10-01',
   })
   @IsDate()
+  @Type(() => Date)
   dateOfBirth: Date;
 
   @ApiProperty({

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsEmail, IsDate } from 'class-validator';
 
 export class UserDto {
@@ -37,4 +38,7 @@ export class UserDto {
   })
   @IsDate()
   dateOfBirth: Date;
+
+  @Exclude()
+  password: string;
 }

@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { UserDto } from './user.dto';
+import { Exclude } from 'class-transformer';
 
 export class PreferenceDto {
   @ApiProperty({
@@ -13,5 +15,8 @@ export class PreferenceDto {
     description: 'The preference to add',
     example: 'Furniture',
   })
-  preference: string;
+  name: string;
+
+  @Exclude()
+  user: UserDto;
 }

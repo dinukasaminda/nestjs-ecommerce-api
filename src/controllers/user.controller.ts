@@ -1,7 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponseProperty,
@@ -55,6 +56,7 @@ export class UserController {
   }
 
   @Post('activate')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Activate User Account [Email Verification]',
     description:
