@@ -1,0 +1,382 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/user/register": {
+      "post": {
+        "description": "Register a new user account. The user account will be created with the provided email and password.",
+        "operationId": "UserController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exists or invalid data"
+          }
+        },
+        "summary": "User Registration",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/activate": {
+      "post": {
+        "description": "This api is a dummy api to simulate the email verification process",
+        "operationId": "UserController_activateAccount",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserVerifyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User account activated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Activate User Account [Email Verification]",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/login": {
+      "post": {
+        "description": "Login with the provided email and password",
+        "operationId": "UserController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials or account not activated"
+          }
+        },
+        "summary": "User Login",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/preferences/add": {
+      "post": {
+        "description": "Add a preference to the user",
+        "operationId": "PreferencesController_addPreference",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPreferenceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Preference added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenceDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Preference already exists"
+          }
+        },
+        "summary": "Add preference",
+        "tags": [
+          "Preferences"
+        ]
+      }
+    },
+    "/preferences/remove/{id}": {
+      "delete": {
+        "description": "Remove a preference from the user",
+        "operationId": "PreferencesController_removePreference",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID of the preference to delete",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Preference deleted successfully"
+          },
+          "404": {
+            "description": "Preference not found"
+          }
+        },
+        "summary": "Remove preference",
+        "tags": [
+          "Preferences"
+        ]
+      }
+    },
+    "/preferences/get": {
+      "post": {
+        "description": "Get all preferences for the user logged in",
+        "operationId": "PreferencesController_getPreferences",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Preferences retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PreferenceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get preferences",
+        "tags": [
+          "Preferences"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "E-Commerce API",
+    "description": "API for Ecommerce application.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "User authentication token, You can generate this token using login api"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "User full name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "jhondoe@gmail.com"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "User date of birth (YYYY-MM-DD)",
+            "example": "1995-10-01"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "password1234"
+          }
+        },
+        "required": [
+          "fullName",
+          "email",
+          "dateOfBirth",
+          "password"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "User ID",
+            "example": 1
+          },
+          "fullName": {
+            "type": "string",
+            "description": "User full name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "jhondoe@gmail.com"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "User date of birth (YYYY-MM-DD)",
+            "example": "1995-10-01"
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "email",
+          "dateOfBirth"
+        ]
+      },
+      "UserVerifyDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "jhondoe@gmail.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "MessageDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Response Message",
+            "example": "User account activated successfully"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "UserLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "jhondoe@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "password1234"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UserLoginResDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "User authnetication token",
+            "example": "string"
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      },
+      "AddPreferenceDto": {
+        "type": "object",
+        "properties": {
+          "preference": {
+            "type": "string",
+            "description": "The preference to add",
+            "example": "Furniture"
+          }
+        },
+        "required": [
+          "preference"
+        ]
+      },
+      "PreferenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The preference id",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "The preference to add",
+            "example": "Furniture"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

@@ -21,3 +21,7 @@ yarn start:dev
 ## Swagger UI
 
 http://localhost:3000/swagger-ui
+
+## Swagger JSON
+
+./swagger.json
