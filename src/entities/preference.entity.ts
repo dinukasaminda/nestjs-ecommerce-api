@@ -9,6 +9,9 @@ export class Preference {
   @Column()
   name: string;
 
-  @ManyToOne(() => User, (user) => user.preferences, { cascade: true })
+  @ManyToOne(() => User, (user) => user.preferences, {
+    cascade: true,
+    eager: false,
+  })
   user: User;
 }

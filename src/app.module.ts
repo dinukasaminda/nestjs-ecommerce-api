@@ -38,6 +38,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [User, Preference],
+      logging: false,
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Preference]),
