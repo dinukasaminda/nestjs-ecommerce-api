@@ -23,8 +23,9 @@ export class TypeORMPreferenceRepository implements PreferenceRepository {
     });
   }
   async findById(id: number): Promise<Preference | null> {
-    return this.preferenceRepository.findOneBy({
-      id: id,
+    return this.preferenceRepository.findOne({
+      where: { id },
+      relations: ['user'],
     });
   }
 
@@ -41,8 +42,9 @@ export class TypeORMPreferenceRepository implements PreferenceRepository {
   }
 
   async findByUserId(userId: number): Promise<Preference[]> {
-    return this.preferenceRepository.find({
+    const res = await this.preferenceRepository.find({
       where: { user: { id: userId } },
     });
+    return res;
   }
 }
