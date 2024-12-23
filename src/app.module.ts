@@ -9,6 +9,13 @@ import { PreferencesService } from './services/preferences.service';
 import { UserService } from './services/user.service';
 import { User } from './entities/user.entity';
 import { Preference } from './entities/preference.entity';
+import { TypeORMUserRepository } from './repositories/TypeORMUserRepository';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from './repositories/UserRepository.interface';
+import { PREFERENCE_REPOSITORY } from './repositories/PreferenceRepository.interface';
+import { TypeORMPreferenceRepository } from './repositories/TypeORMPreferenceRepository';
 
 @Module({
   imports: [
@@ -34,6 +41,18 @@ import { Preference } from './entities/preference.entity';
     TypeOrmModule.forFeature([User, Preference]),
   ],
   controllers: [UserController, PreferencesController],
-  providers: [AuthService, UserService, PreferencesService],
+  providers: [
+    {
+      provide: USER_REPOSITORY,
+      useClass: TypeORMUserRepository,
+    },
+    {
+      provide: PREFERENCE_REPOSITORY,
+      useClass: TypeORMPreferenceRepository,
+    },
+    AuthService,
+    UserService,
+    PreferencesService,
+  ],
 })
 export class AppModule {}

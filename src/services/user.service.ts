@@ -1,24 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from 'src/dto/create-user.dto';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '../entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
-import { UserDto } from 'src/dto/user.dto';
-import { plainToInstance } from 'class-transformer';
+import { UserDto } from '../dto/user.dto';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from '../repositories/UserRepository.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<UserDto> {
-    const found = await this.userRepository.findOneBy({
-      email: createUserDto.email,
-    });
+    const found = await this.userRepository.findOneByEmail(createUserDto.email);
     if (found) {
       throw new BadRequestException('User already exists');
     }
@@ -30,11 +31,11 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ email });
+    return this.userRepository.findOneByEmail(email);
   }
 
   async activateAccount(email: string): Promise<{ message: string }> {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneByEmail(email);
     if (!user) {
       throw new BadRequestException('User not found');
     }
