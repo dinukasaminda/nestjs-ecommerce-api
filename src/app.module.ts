@@ -16,6 +16,8 @@ import {
 } from './repositories/UserRepository.interface';
 import { PREFERENCE_REPOSITORY } from './repositories/PreferenceRepository.interface';
 import { TypeORMPreferenceRepository } from './repositories/TypeORMPreferenceRepository';
+import { LoggingInterceptor } from './interceptors/RequestLogger.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -49,6 +51,10 @@ import { TypeORMPreferenceRepository } from './repositories/TypeORMPreferenceRep
     {
       provide: PREFERENCE_REPOSITORY,
       useClass: TypeORMPreferenceRepository,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
     AuthService,
     UserService,
