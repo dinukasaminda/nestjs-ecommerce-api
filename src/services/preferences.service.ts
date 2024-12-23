@@ -2,22 +2,28 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  Inject,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
-import { AddPreferenceDto } from 'src/dto/add-preferences.dto';
-import { PreferenceDto } from 'src/dto/preferences.dto';
-import { Preference } from 'src/entities/preference.entity';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { AddPreferenceDto } from '../dto/add-preferences.dto';
+import { PreferenceDto } from '../dto/preferences.dto';
+import {
+  PREFERENCE_REPOSITORY,
+  PreferenceRepository,
+} from '../repositories/PreferenceRepository.interface';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from '../repositories/UserRepository.interface';
 
 @Injectable()
 export class PreferencesService {
   constructor(
-    @InjectRepository(Preference)
-    private readonly preferencesRepository: Repository<Preference>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(PREFERENCE_REPOSITORY)
+    private readonly preferencesRepository: PreferenceRepository,
+
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
   ) {}
 
   /**
@@ -28,18 +34,17 @@ export class PreferencesService {
     addPreferenceDto: AddPreferenceDto,
   ): Promise<PreferenceDto> {
     // Ensure the user exists
-    const user = await this.userRepository.findOneBy({ id: userId });
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     // Check if the preference already exists for the user
-    const existingPreference = await this.preferencesRepository.findOne({
-      where: {
-        user: { id: userId },
-        name: addPreferenceDto.preference,
-      },
-    });
+    const existingPreference =
+      await this.preferencesRepository.findByUserIdAndName(
+        userId,
+        addPreferenceDto.preference,
+      );
 
     if (existingPreference) {
       throw new ConflictException('Preference already exists');
@@ -58,13 +63,9 @@ export class PreferencesService {
    * Remove a preference by ID
    */
   async removePreference(userId: number, id: number): Promise<void> {
-    const preference = await this.preferencesRepository.findOne({
-      where: {
-        user: { id: userId },
-        id: id,
-      },
-    });
-    if (!preference) {
+    const preference = await this.preferencesRepository.findById(id);
+
+    if (!preference || preference.user.id !== userId) {
       throw new NotFoundException('Preference not found');
     }
 
@@ -78,9 +79,7 @@ export class PreferencesService {
    * Get all preferences for a user
    */
   async getUserPreferences(userId: number): Promise<PreferenceDto[]> {
-    const res = await this.preferencesRepository.find({
-      where: { user: { id: userId } },
-    });
+    const res = await this.preferencesRepository.findByUserId(userId);
     return res.map((v) => plainToInstance(PreferenceDto, v));
   }
 }
